@@ -1,0 +1,31 @@
+/ci/gates:
+  post:
+    tags: [ci]
+    operationId: createGateEvaluation
+    summary: Evaluate the CI gate and return BLOCK / WARN / PASS decision
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../codeatlas.yaml#/components/schemas/CiGateRequest'
+    responses:
+      "200":
+        description: CI gate decision
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/CiGateResponse'
+
+/ci/baselines:
+  post:
+    tags: [ci]
+    operationId: createBaseline
+    summary: Snapshot current findings as the baseline for future delta comparisons
+    responses:
+      "201":
+        description: Baseline captured
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/BaselineCaptureResponse'

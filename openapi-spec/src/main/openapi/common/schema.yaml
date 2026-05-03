@@ -1,0 +1,101 @@
+ErrorResponse:
+  type: object
+  required: [code, message, timestamp]
+  properties:
+    code:
+      type: string
+      example: VALIDATION_ERROR
+    message:
+      type: string
+    timestamp:
+      type: string
+      format: date-time
+
+Confidence:
+  type: string
+  enum: [high, medium, low]
+  description: "high = resolved/authoritative; medium = convention; low = name-match only"
+
+EvidenceSource:
+  type: string
+  enum:
+    - solver
+    - spring_convention
+    - manifest
+    - openapi
+    - feign
+    - retrofit
+    - webclient
+    - resttemplate
+    - okhttp
+    - url_constant
+    - name_match
+
+GraphStatus:
+  type: string
+  enum: [fresh, stale_for_relevant_files, no_graph]
+  description: >
+    fresh = all relevant file fingerprints match the active snapshot.
+    stale_for_relevant_files = one or more relevant files are newer; read them directly.
+    no_graph = no active snapshot; bootstrap required.
+
+SourceRange:
+  type: object
+  properties:
+    line_start:
+      type: integer
+    col_start:
+      type: integer
+    line_end:
+      type: integer
+    col_end:
+      type: integer
+
+TrustEnvelope:
+  type: object
+  properties:
+    decision_confidence:
+      $ref: '#/Confidence'
+    evidence_quality:
+      type: string
+      enum: [authoritative, strong, inferred, weak]
+    overlay_used:
+      type: boolean
+      default: false
+    not_safe_for:
+      type: array
+      items:
+        type: string
+        enum: [ci_gates, high_confidence_recommendations, architecture_enforcement]
+    unsoundness_ledger:
+      type: array
+      items:
+        $ref: '#/UnsoundnessEntry'
+
+UnsoundnessEntry:
+  type: object
+  properties:
+    type:
+      type: string
+      example: reflection_unresolved
+    symbol:
+      type: string
+    impact:
+      type: string
+
+EntryPoint:
+  type: object
+  properties:
+    type:
+      type: string
+      enum: [http_endpoint, scheduled_job, message_listener]
+    method:
+      type: string
+      example: GET
+    path:
+      type: string
+      example: /refunds/{id}/cancel
+    controller:
+      type: string
+    confidence:
+      $ref: '#/Confidence'

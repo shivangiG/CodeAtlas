@@ -1,0 +1,169 @@
+RepoSummaryResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    read_source_directly:
+      type: array
+      items:
+        type: string
+    modules:
+      type: array
+      items:
+        type: string
+    entry_points:
+      type: array
+      items:
+        $ref: '../common/schema.yaml#/EntryPoint'
+    total_nodes:
+      type: integer
+    total_edges:
+      type: integer
+
+SymbolSummary:
+  type: object
+  properties:
+    id:
+      type: string
+    kind:
+      type: string
+    fq_signature:
+      type: string
+    file_path:
+      type: string
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+
+SymbolSearchResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    read_source_directly:
+      type: array
+      items:
+        type: string
+    symbols:
+      type: array
+      items:
+        $ref: '#/SymbolSummary'
+
+SymbolDetail:
+  type: object
+  properties:
+    id:
+      type: string
+    kind:
+      type: string
+    fq_signature:
+      type: string
+    file_path:
+      type: string
+    source_range:
+      $ref: '../common/schema.yaml#/SourceRange'
+    attributes:
+      type: object
+      additionalProperties: true
+
+EdgeDetail:
+  type: object
+  properties:
+    id:
+      type: string
+    kind:
+      type: string
+    src_node_id:
+      type: string
+    dst_node_id:
+      type: string
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    evidence_source:
+      $ref: '../common/schema.yaml#/EvidenceSource'
+    source_file:
+      type: string
+    source_range:
+      $ref: '../common/schema.yaml#/SourceRange'
+    reason:
+      type: string
+
+SymbolContextResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    read_source_directly:
+      type: array
+      items:
+        type: string
+    symbol:
+      $ref: '#/SymbolDetail'
+    edges:
+      type: array
+      items:
+        $ref: '#/EdgeDetail'
+
+CallFlowResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    read_source_directly:
+      type: array
+      items:
+        type: string
+    call_chain:
+      type: array
+      items:
+        type: string
+      example:
+        - "RefundController.cancelRefund"
+        - "RefundService.cancelRefund"
+        - "PaymentLedgerService.reverseEntry"
+        - "RefundRepository.save"
+    edges:
+      type: array
+      items:
+        $ref: '#/EdgeDetail'
+
+TaskContextRequest:
+  type: object
+  required: [task]
+  properties:
+    task:
+      type: string
+      example: "add authorization check in DatasetService.read"
+    context_pack_id:
+      type: string
+      description: Reuse an existing context pack for this task
+
+MinimalContextResponse:
+  type: object
+  properties:
+    context_pack_id:
+      type: string
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    files:
+      type: array
+      items:
+        type: string
+      description: Minimum set of files the agent should read
+    symbols:
+      type: array
+      items:
+        type: string
+    read_source_directly:
+      type: array
+      items:
+        type: string

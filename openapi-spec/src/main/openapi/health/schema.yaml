@@ -1,0 +1,13 @@
+HealthResponse:
+  type: object
+  required: [status, application, timestamp]
+  properties:
+    status:
+      type: string
+      example: UP
+    application:
+      type: string
+      example: codeatlas
+    timestamp:
+      type: string
+      format: date-time

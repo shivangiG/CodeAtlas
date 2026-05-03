@@ -1,0 +1,27 @@
+/impacts:
+  post:
+    tags: [impact]
+    operationId: createImpactAnalysis
+    summary: Blast radius analysis for a changed file or symbol
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../codeatlas.yaml#/components/schemas/ImpactRequest'
+          example:
+            target: "src/main/java/com/company/payment/RefundService.java"
+            targetKind: FILE
+    responses:
+      "200":
+        description: Impact report with entry points, data touchpoints, and risk score
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ImpactResponse'
+      "400":
+        description: Invalid request
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'

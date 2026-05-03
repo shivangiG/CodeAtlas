@@ -52,3 +52,7 @@ bin/
 # Environment variables
 .env
 .env.local
+
+# Design and planning docs
+docs/design/
+docs/plans/

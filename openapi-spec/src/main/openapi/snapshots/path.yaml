@@ -1,0 +1,93 @@
+/snapshots:
+  post:
+    tags: [snapshots]
+    operationId: createSnapshot
+    summary: Create and publish a new immutable graph snapshot
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../codeatlas.yaml#/components/schemas/SnapshotRequest'
+          example:
+            snapshotName: "S-01"
+    responses:
+      "201":
+        description: Snapshot published successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/SnapshotResponse'
+      "400":
+        description: Request validation failed
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'
+      "409":
+        description: Snapshot name already exists
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'
+
+  get:
+    tags: [snapshots]
+    operationId: listSnapshots
+    summary: List all available graph snapshots
+    responses:
+      "200":
+        description: List of snapshots
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../codeatlas.yaml#/components/schemas/SnapshotResponse'
+
+/snapshots/active:
+  get:
+    tags: [snapshots]
+    operationId: getActiveSnapshot
+    summary: Get the currently active snapshot and its freshness status
+    responses:
+      "200":
+        description: Active snapshot with graph status
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/GraphStatusResponse'
+      "404":
+        description: No active snapshot found
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'
+
+/snapshots/{snapshotId}:
+  parameters:
+    - name: snapshotId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: "S-01"
+  delete:
+    tags: [snapshots]
+    operationId: deleteSnapshot
+    summary: Delete a specific snapshot (cannot delete the active one)
+    responses:
+      "204":
+        description: Snapshot deleted
+      "409":
+        description: Cannot delete the active snapshot
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'
+      "404":
+        description: Snapshot not found
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'

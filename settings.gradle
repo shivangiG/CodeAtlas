@@ -1,1 +1,19 @@
-rootProject.name = 'java-gradle-app'
+rootProject.name = 'codeatlas'
+
+// ─── Subprojects ─────────────────────────────────────────────────────────────
+//
+//  :openapi-spec        Generates Java interfaces + models from the OpenAPI contract.
+//
+//  :server              Spring Boot application. Implements the generated interfaces.
+//                       Depends on :openapi-spec.
+//
+//  :service-client      Typed OkHttp wrapper for the CodeAtlas API.
+//                       Depends on :openapi-spec for model types.
+//
+//  :integration-tests   Black-box integration tests. Starts :server at RANDOM_PORT
+//                       and exercises every endpoint through :service-client.
+
+include ':openapi-spec'
+include ':server'
+include ':service-client'
+include ':integration-tests'

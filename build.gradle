@@ -1,23 +1,36 @@
-plugins {
-    id 'java'
-    id 'application'
+// ─── root build ───────────────────────────────────────────────────────────────
+// Build coordinator only. No production code lives at the root.
+// All production and test code lives in submodules:
+//
+//   :openapi-spec        OpenAPI contract → generated Java interfaces + models
+//   :server              Spring Boot application
+//   :service-client      Typed OkHttp wrapper for the CodeAtlas API
+//   :integration-tests   Black-box HTTP integration tests via :service-client
+
+allprojects {
+    group = 'com.sgarsgaya'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
 }
 
-group = 'com.example'
-version = '1.0.0'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-}
-
-application {
-    mainClass = 'com.example.app.App'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
+subprojects {
+    // Standardise on Java 23 (the version installed on this machine via Homebrew).
+    // All submodules inherit this so there is one place to bump the version.
+    plugins.withId('java') {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(23)
+            }
+        }
+    }
+    plugins.withId('java-library') {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(23)
+            }
+        }
+    }
 }

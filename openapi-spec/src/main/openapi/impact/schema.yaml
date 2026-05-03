@@ -1,0 +1,56 @@
+ImpactRequest:
+  type: object
+  required: [target, targetKind]
+  properties:
+    target:
+      type: string
+      description: Repo-relative file path or FQ symbol signature
+      example: "src/main/java/com/company/payment/RefundService.java"
+    targetKind:
+      type: string
+      enum: [FILE, SYMBOL]
+
+ImpactResponse:
+  allOf:
+    - $ref: '../common/schema.yaml#/TrustEnvelope'
+    - type: object
+      properties:
+        graph_status:
+          $ref: '../common/schema.yaml#/GraphStatus'
+        entry_points:
+          type: array
+          items:
+            $ref: '../common/schema.yaml#/EntryPoint'
+        core_flow:
+          type: array
+          items:
+            type: string
+        data_touchpoints:
+          type: array
+          items:
+            type: string
+        external_touchpoints:
+          type: array
+          items:
+            type: string
+        transaction_boundaries:
+          type: array
+          items:
+            type: string
+        tests_to_read:
+          type: array
+          items:
+            type: string
+        risk_score:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        risk_notes:
+          type: array
+          items:
+            type: string
+        read_source_directly:
+          type: array
+          items:
+            type: string

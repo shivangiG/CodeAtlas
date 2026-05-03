@@ -1,0 +1,49 @@
+// ─── server module ────────────────────────────────────────────────────────────
+// Spring Boot application. Implements the generated OpenAPI interfaces from
+// :openapi-spec. Unit tests live here. Integration tests live in :integration-tests.
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+// group, version, repositories, and java toolchain are inherited from root allprojects/subprojects.
+
+dependencies {
+    // ── Generated API contract (interfaces + models) ───────────────────────
+    implementation project(':openapi-spec')
+
+    // ── Spring Boot ────────────────────────────────────────────────────────
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // ── Swagger UI ─────────────────────────────────────────────────────────
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+    // ── Serialisation ──────────────────────────────────────────────────────
+    implementation 'org.yaml:snakeyaml:2.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+
+    // ── Java indexer (graph/indexer layer — not yet implemented) ───────────
+    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.26.2'
+
+    // ── Database ───────────────────────────────────────────────────────────
+    runtimeOnly 'com.h2database:h2'
+
+    // ── MapStruct ──────────────────────────────────────────────────────────
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // ── Unit tests ─────────────────────────────────────────────────────────
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    # DB_CLOSE_DELAY=-1 is intentionally absent: without it H2 destroys the
+    # in-memory database when HikariCP closes all connections on context teardown.
+    # Combined with @DirtiesContext, each test gets a fresh, empty database.
+    url: jdbc:h2:mem:codeatlas;MODE=PostgreSQL
+  jpa:
+    hibernate:
+      # create-drop rebuilds the schema on every context startup and drops it on
+      # shutdown, guaranteeing isolation between test methods.
+      ddl-auto: create-drop

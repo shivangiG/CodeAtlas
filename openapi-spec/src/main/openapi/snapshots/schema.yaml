@@ -1,0 +1,35 @@
+SnapshotRequest:
+  type: object
+  required: [snapshotName]
+  properties:
+    snapshotName:
+      type: string
+      minLength: 1
+      example: "S-01"
+
+SnapshotResponse:
+  type: object
+  required: [id, snapshotName, createdAt]
+  properties:
+    id:
+      type: integer
+      format: int64
+    snapshotName:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
+
+GraphStatusResponse:
+  type: object
+  required: [snapshotId, graphStatus, createdAt]
+  properties:
+    snapshotId:
+      type: string
+    graphStatus:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    createdAt:
+      type: string
+      format: date-time
+    rebuildWorkerActive:
+      type: boolean

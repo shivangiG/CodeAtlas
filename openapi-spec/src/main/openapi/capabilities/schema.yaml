@@ -1,0 +1,93 @@
+CapabilitySearchRequest:
+  type: object
+  required: [task]
+  properties:
+    task:
+      type: string
+      example: "check whether a user can read a dataset"
+    context:
+      type: string
+
+ReuseRecommendation:
+  type: object
+  properties:
+    client:
+      type: string
+      example: RbacClient
+    method:
+      type: string
+      example: checkPermission
+    bean_available:
+      type: boolean
+    provided_by:
+      type: string
+    dependency_version:
+      type: string
+    capability_id:
+      type: string
+      example: "rbac.permission.check"
+    transport:
+      type: string
+      example: "POST /permissions/check"
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    evidence_quality:
+      type: string
+      enum: [authoritative, strong, inferred, weak]
+    reuse_priority:
+      type: string
+      enum: [must_reuse, should_reuse, consider_reuse]
+    rank_rationale:
+      type: string
+
+CapabilitySearchResponse:
+  allOf:
+    - $ref: '../common/schema.yaml#/TrustEnvelope'
+    - type: object
+      properties:
+        graph_status:
+          $ref: '../common/schema.yaml#/GraphStatus'
+        files:
+          type: array
+          items:
+            type: string
+        symbols:
+          type: array
+          items:
+            type: string
+        read_source_directly:
+          type: array
+          items:
+            type: string
+        recommended_reuse:
+          type: array
+          items:
+            $ref: '#/ReuseRecommendation'
+        do_not_read:
+          type: array
+          items:
+            type: string
+
+ServiceClientSummary:
+  type: object
+  properties:
+    artifact_id:
+      type: string
+    bean_type:
+      type: string
+    capabilities_count:
+      type: integer
+    manifest_available:
+      type: boolean
+    confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+
+ServiceClientInventoryResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    clients:
+      type: array
+      items:
+        $ref: '#/ServiceClientSummary'

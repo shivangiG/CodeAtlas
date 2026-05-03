@@ -1,0 +1,78 @@
+// ─── openapi-spec module ─────────────────────────────────────────────────────
+// Sole responsibility: read the OpenAPI contract files from openapi-specs/,
+// generate Java interfaces and model classes, and expose them as a compiled
+// jar that the :app module (and any future consumers) depend on.
+//
+// Nothing in this module is Spring-Boot-specific. It produces plain Java
+// classes that compile against the Jakarta/Swagger annotations only.
+
+plugins {
+    id 'java-library'
+    id 'org.openapi.generator' version '7.8.0'
+}
+
+// group, version, repositories, and java toolchain are inherited from root allprojects/subprojects.
+
+// ─── Code generation ─────────────────────────────────────────────────────────
+
+openApiGenerate {
+    generatorName = 'spring'
+
+    inputSpec     = "$projectDir/src/main/openapi/codeatlas.yaml"
+    outputDir     = "$buildDir/generated"
+
+    apiPackage    = 'com.sgarsgaya.codeatlas.api'
+    modelPackage  = 'com.sgarsgaya.codeatlas.model'
+
+    configOptions = [
+        // Generate only interfaces — the :app controllers implement them.
+        interfaceOnly           : 'true',
+        // Spring Boot 3 / Jakarta EE 9 annotation set.
+        useSpringBoot3          : 'true',
+        useBeanValidation       : 'true',
+        performBeanValidation   : 'true',
+        useJakartaEe            : 'true',
+        // Don't generate pom.xml, .gitignore, test stubs, or doc scaffolding.
+        generateSupportingFiles : 'false',
+        documentationProvider   : 'none',
+    ]
+
+    // Delete stale generated files before each run so removed paths don't linger.
+    cleanupOutput    = true
+    // Fail the build immediately if the spec is invalid.
+    skipValidateSpec = false
+}
+
+// Wire the generated sources into this module's main source set.
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
+}
+
+// Generation must complete before Java compilation in this module.
+compileJava.dependsOn tasks.openApiGenerate
+
+// ─── Dependencies ────────────────────────────────────────────────────────────
+// These are compile-time-only annotations needed by the generated interfaces.
+// They are declared as `api` so that any module depending on :openapi-spec
+// automatically gets them on its compile classpath without re-declaring them.
+
+dependencies {
+    api 'io.swagger.core.v3:swagger-annotations:2.2.23'
+    api 'io.swagger.core.v3:swagger-models:2.2.23'
+    api 'org.openapitools:jackson-databind-nullable:0.2.6'
+    api 'jakarta.validation:jakarta.validation-api:3.0.2'
+    api 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    api 'org.springframework:spring-web:6.1.14'
+    // @Validated lives in spring-context; @DateTimeFormat is in spring-context too.
+    // The generator emits both — declare explicitly to avoid classpath ambiguity.
+    api 'org.springframework:spring-context:6.1.14'
+    // Generator emits hibernate-validator constraint imports on every model class.
+    api 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    // ApiUtil (generated helper) imports jakarta.servlet.http.HttpServletResponse.
+    api 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    api 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
+}

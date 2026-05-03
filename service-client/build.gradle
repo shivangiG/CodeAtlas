@@ -1,0 +1,23 @@
+// ─── service-client module ────────────────────────────────────────────────────
+// Typed OkHttp wrapper for the CodeAtlas API.
+// Depends on :openapi-spec for generated model classes so callers work with
+// the same types the server uses. Has no Spring dependency — usable from any
+// Java context (tests, CLI tools, other services).
+
+plugins {
+    id 'java-library'
+}
+
+// group, version, repositories, and java toolchain are inherited from root allprojects/subprojects.
+
+dependencies {
+    // ── Generated API models (same types the server uses) ─────────────────
+    api project(':openapi-spec')
+
+    // ── HTTP client ───────────────────────────────────────────────────────
+    api 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // ── JSON serialisation ────────────────────────────────────────────────
+    api 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
+}

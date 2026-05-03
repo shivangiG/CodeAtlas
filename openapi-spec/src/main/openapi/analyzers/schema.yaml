@@ -1,0 +1,84 @@
+Finding:
+  type: object
+  required: [id, kind, severity, decision_confidence, evidence_quality]
+  properties:
+    id:
+      type: string
+    kind:
+      type: string
+      enum:
+        - LAYER_VIOLATION
+        - CIRCULAR_DEPENDENCY
+        - DEAD_MODULE
+        - GOD_SERVICE
+        - OPENAPI_DRIFT
+        - DUPLICATE_CLIENT_USAGE
+    severity:
+      type: string
+      enum: [critical, warning, info]
+    decision_confidence:
+      $ref: '../common/schema.yaml#/Confidence'
+    evidence_quality:
+      type: string
+      enum: [authoritative, strong, inferred, weak]
+    derivation_path:
+      type: array
+      items:
+        type: string
+      description: Edge IDs or symbol signatures forming the evidence path
+    message:
+      type: string
+    source_file:
+      type: string
+    is_new_over_baseline:
+      type: boolean
+    unsoundness_ledger:
+      type: array
+      items:
+        $ref: '../common/schema.yaml#/UnsoundnessEntry'
+
+ViolationsResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    blocking:
+      type: array
+      items:
+        $ref: '#/Finding'
+    warnings:
+      type: array
+      items:
+        $ref: '#/Finding'
+
+OpenApiDriftResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    spec_without_code:
+      type: array
+      items:
+        $ref: '#/Finding'
+    code_without_spec:
+      type: array
+      items:
+        $ref: '#/Finding'
+
+ReviewReportResponse:
+  type: object
+  properties:
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+    summary:
+      type: string
+    violations:
+      $ref: '#/ViolationsResponse'
+    openapi_drift:
+      $ref: '#/OpenApiDriftResponse'
+    risk_score:
+      type: number
+      format: double
+    generated_at:
+      type: string
+      format: date-time

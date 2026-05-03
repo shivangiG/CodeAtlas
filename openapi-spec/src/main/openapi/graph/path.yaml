@@ -1,0 +1,128 @@
+/graph/summary:
+  get:
+    tags: [graph]
+    operationId: getSummary
+    summary: High-level repository map (modules, packages, entry points)
+    responses:
+      "200":
+        description: Repository summary
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/RepoSummaryResponse'
+
+/graph/symbols:
+  get:
+    tags: [graph]
+    operationId: listSymbols
+    summary: Find classes, methods, endpoints, or packages by name pattern
+    parameters:
+      - name: query
+        in: query
+        required: true
+        schema:
+          type: string
+        example: "DatasetService"
+      - name: kind
+        in: query
+        schema:
+          type: string
+          enum: [CLASS, METHOD, ENDPOINT, PACKAGE, SPRING_BEAN]
+      - name: snapshot_id
+        in: query
+        schema:
+          type: string
+        description: Pin to a specific snapshot (defaults to active)
+    responses:
+      "200":
+        description: Matching symbols
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/SymbolSearchResponse'
+
+/graph/symbols/{symbolId}:
+  parameters:
+    - name: symbolId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: FQ symbol signature or fallback hash
+      example: "com.company.DatasetService#read(String):Dataset"
+  get:
+    tags: [graph]
+    operationId: getSymbol
+    summary: Get a single symbol with its direct edges and confidence metadata
+    parameters:
+      - name: include_source
+        in: query
+        schema:
+          type: boolean
+          default: false
+        description: Include source excerpts (opt-in; requires max_lines_per_symbol)
+      - name: max_lines_per_symbol
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+    responses:
+      "200":
+        description: Symbol with edges
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/SymbolContextResponse'
+      "404":
+        description: Symbol not found
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ErrorResponse'
+
+/graph/call-flows:
+  get:
+    tags: [graph]
+    operationId: getCallFlow
+    summary: Trace execution path from a controller to repository or external client
+    parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+        example: "com.company.DatasetController#read(String):ResponseEntity"
+      - name: max_depth
+        in: query
+        schema:
+          type: integer
+          default: 5
+          minimum: 1
+          maximum: 15
+    responses:
+      "200":
+        description: Call chain with per-edge confidence
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/CallFlowResponse'
+
+/graph/task-contexts:
+  post:
+    tags: [graph]
+    operationId: createTaskContext
+    summary: Return the smallest set of files the agent should read for a task
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../codeatlas.yaml#/components/schemas/TaskContextRequest'
+    responses:
+      "200":
+        description: Minimal context slice with freshness verdict
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/MinimalContextResponse'

@@ -1,0 +1,59 @@
+/analyzers/violations:
+  get:
+    tags: [analyzers]
+    operationId: listViolations
+    summary: List current architecture violations (layer, circular dependency)
+    parameters:
+      - name: confidence
+        in: query
+        schema:
+          type: string
+          enum: [high, medium, low]
+        description: Minimum confidence threshold for returned findings
+    responses:
+      "200":
+        description: Violation findings split into blocking and warning lists
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ViolationsResponse'
+
+/analyzers/openapi-drift:
+  get:
+    tags: [analyzers]
+    operationId: listDriftFindings
+    summary: List OpenAPI drift findings (spec-without-code and code-without-spec)
+    responses:
+      "200":
+        description: Drift findings with confidence and evidence
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/OpenApiDriftResponse'
+
+/analyzers/reviews:
+  get:
+    tags: [analyzers]
+    operationId: getReview
+    summary: Full architecture review report (JSON, Markdown, or SARIF)
+    parameters:
+      - name: format
+        in: query
+        schema:
+          type: string
+          enum: [json, markdown, sarif]
+          default: json
+    responses:
+      "200":
+        description: Full review report
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ReviewReportResponse'
+          text/markdown:
+            schema:
+              type: string
+          application/sarif+json:
+            schema:
+              type: object
+              description: SARIF 2.1.0 formatted report

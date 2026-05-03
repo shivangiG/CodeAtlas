@@ -1,0 +1,34 @@
+CiGateRequest:
+  type: object
+  properties:
+    overlay_used:
+      type: boolean
+      default: false
+      description: Must be false for any blocking decision
+
+CiGateResponse:
+  type: object
+  required: [decision]
+  properties:
+    decision:
+      type: string
+      enum: [BLOCK, WARN, PASS]
+    blocking_findings:
+      type: array
+      items:
+        $ref: '../analyzers/schema.yaml#/Finding'
+    warning_findings:
+      type: array
+      items:
+        $ref: '../analyzers/schema.yaml#/Finding'
+    graph_status:
+      $ref: '../common/schema.yaml#/GraphStatus'
+
+BaselineCaptureResponse:
+  type: object
+  properties:
+    captured_at:
+      type: string
+      format: date-time
+    total_findings_suppressed:
+      type: integer

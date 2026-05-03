@@ -1,0 +1,34 @@
+/capabilities/search:
+  post:
+    tags: [capabilities]
+    operationId: searchCapabilities
+    summary: Find an existing business capability to reuse instead of reimplementing
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../codeatlas.yaml#/components/schemas/CapabilitySearchRequest'
+          example:
+            task: "check whether a user can read a dataset"
+            context: "I am about to add an authorization check in DatasetService.read"
+    responses:
+      "200":
+        description: Ranked reuse recommendations with confidence and evidence
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/CapabilitySearchResponse'
+
+/capabilities/clients:
+  get:
+    tags: [capabilities]
+    operationId: listServiceClients
+    summary: List all internal service clients available in the repository
+    responses:
+      "200":
+        description: Service client inventory
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/ServiceClientInventoryResponse'

@@ -1,0 +1,160 @@
+openapi: 3.1.0
+
+info:
+  title: CodeAtlas API
+  description: |
+    CodeAtlas is a deterministic local code intelligence and reuse graph for Java/Spring systems.
+    It indexes repositories into immutable SQLite snapshots and exposes task-oriented APIs to
+    AI coding assistants and developer tooling.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development
+
+tags:
+  - name: health
+    description: Application health and readiness
+  - name: snapshots
+    description: Immutable graph snapshot lifecycle
+  - name: graph
+    description: Graph query and symbol search
+  - name: impact
+    description: Blast radius and change impact analysis
+  - name: capabilities
+    description: Business capability discovery and reuse recommendations
+  - name: analyzers
+    description: Architecture violation and drift analysis
+  - name: ci
+    description: CI gate evaluation
+
+# ─── Paths ────────────────────────────────────────────────────────────────────
+# Each feature owns its own directory. Path operations live in <feature>/path.yaml.
+# The JSON Pointer fragments use ~1 to encode the leading slash in path keys.
+
+paths:
+  /health:
+    $ref: './health/path.yaml#/~1health'
+
+  /snapshots:
+    $ref: './snapshots/path.yaml#/~1snapshots'
+  /snapshots/active:
+    $ref: './snapshots/path.yaml#/~1snapshots~1active'
+  /snapshots/{snapshotId}:
+    $ref: './snapshots/path.yaml#/~1snapshots~1%7BsnapshotId%7D'
+
+  /graph/summary:
+    $ref: './graph/path.yaml#/~1graph~1summary'
+  /graph/symbols:
+    $ref: './graph/path.yaml#/~1graph~1symbols'
+  /graph/symbols/{symbolId}:
+    $ref: './graph/path.yaml#/~1graph~1symbols~1%7BsymbolId%7D'
+  /graph/call-flows:
+    $ref: './graph/path.yaml#/~1graph~1call-flows'
+  /graph/task-contexts:
+    $ref: './graph/path.yaml#/~1graph~1task-contexts'
+
+  /impacts:
+    $ref: './impact/path.yaml#/~1impacts'
+
+  /capabilities/search:
+    $ref: './capabilities/path.yaml#/~1capabilities~1search'
+  /capabilities/clients:
+    $ref: './capabilities/path.yaml#/~1capabilities~1clients'
+
+  /analyzers/violations:
+    $ref: './analyzers/path.yaml#/~1analyzers~1violations'
+  /analyzers/openapi-drift:
+    $ref: './analyzers/path.yaml#/~1analyzers~1openapi-drift'
+  /analyzers/reviews:
+    $ref: './analyzers/path.yaml#/~1analyzers~1reviews'
+
+  /ci/gates:
+    $ref: './ci/path.yaml#/~1ci~1gates'
+  /ci/baselines:
+    $ref: './ci/path.yaml#/~1ci~1baselines'
+
+# ─── Components ───────────────────────────────────────────────────────────────
+# All schema names are registered here. Each entry is a $ref into the owning
+# feature's schema.yaml so the generator resolves a single flat namespace.
+
+components:
+  schemas:
+    # common
+    ErrorResponse:
+      $ref: './common/schema.yaml#/ErrorResponse'
+    Confidence:
+      $ref: './common/schema.yaml#/Confidence'
+    EvidenceSource:
+      $ref: './common/schema.yaml#/EvidenceSource'
+    GraphStatus:
+      $ref: './common/schema.yaml#/GraphStatus'
+    SourceRange:
+      $ref: './common/schema.yaml#/SourceRange'
+    TrustEnvelope:
+      $ref: './common/schema.yaml#/TrustEnvelope'
+    UnsoundnessEntry:
+      $ref: './common/schema.yaml#/UnsoundnessEntry'
+    EntryPoint:
+      $ref: './common/schema.yaml#/EntryPoint'
+    # health
+    HealthResponse:
+      $ref: './health/schema.yaml#/HealthResponse'
+    # snapshots
+    SnapshotRequest:
+      $ref: './snapshots/schema.yaml#/SnapshotRequest'
+    SnapshotResponse:
+      $ref: './snapshots/schema.yaml#/SnapshotResponse'
+    GraphStatusResponse:
+      $ref: './snapshots/schema.yaml#/GraphStatusResponse'
+    # graph
+    RepoSummaryResponse:
+      $ref: './graph/schema.yaml#/RepoSummaryResponse'
+    SymbolSummary:
+      $ref: './graph/schema.yaml#/SymbolSummary'
+    SymbolSearchResponse:
+      $ref: './graph/schema.yaml#/SymbolSearchResponse'
+    SymbolDetail:
+      $ref: './graph/schema.yaml#/SymbolDetail'
+    EdgeDetail:
+      $ref: './graph/schema.yaml#/EdgeDetail'
+    SymbolContextResponse:
+      $ref: './graph/schema.yaml#/SymbolContextResponse'
+    CallFlowResponse:
+      $ref: './graph/schema.yaml#/CallFlowResponse'
+    TaskContextRequest:
+      $ref: './graph/schema.yaml#/TaskContextRequest'
+    MinimalContextResponse:
+      $ref: './graph/schema.yaml#/MinimalContextResponse'
+    # impact
+    ImpactRequest:
+      $ref: './impact/schema.yaml#/ImpactRequest'
+    ImpactResponse:
+      $ref: './impact/schema.yaml#/ImpactResponse'
+    # capabilities
+    CapabilitySearchRequest:
+      $ref: './capabilities/schema.yaml#/CapabilitySearchRequest'
+    ReuseRecommendation:
+      $ref: './capabilities/schema.yaml#/ReuseRecommendation'
+    CapabilitySearchResponse:
+      $ref: './capabilities/schema.yaml#/CapabilitySearchResponse'
+    ServiceClientSummary:
+      $ref: './capabilities/schema.yaml#/ServiceClientSummary'
+    ServiceClientInventoryResponse:
+      $ref: './capabilities/schema.yaml#/ServiceClientInventoryResponse'
+    # analyzers
+    Finding:
+      $ref: './analyzers/schema.yaml#/Finding'
+    ViolationsResponse:
+      $ref: './analyzers/schema.yaml#/ViolationsResponse'
+    OpenApiDriftResponse:
+      $ref: './analyzers/schema.yaml#/OpenApiDriftResponse'
+    ReviewReportResponse:
+      $ref: './analyzers/schema.yaml#/ReviewReportResponse'
+    # ci
+    CiGateRequest:
+      $ref: './ci/schema.yaml#/CiGateRequest'
+    CiGateResponse:
+      $ref: './ci/schema.yaml#/CiGateResponse'
+    BaselineCaptureResponse:
+      $ref: './ci/schema.yaml#/BaselineCaptureResponse'

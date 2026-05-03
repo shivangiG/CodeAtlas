@@ -1,0 +1,40 @@
+// ─── integration-tests module ─────────────────────────────────────────────────
+// Black-box integration tests for the CodeAtlas API.
+// Starts the Spring Boot application on a random port, then exercises it
+// through the typed CodeAtlasClient (OkHttp wrapper) in :service-client.
+//
+// No MockMvc, no in-process Spring calls — every test makes real HTTP requests.
+// This module has no production code; only test sources.
+
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+// group, version, repositories, and java toolchain are inherited from root allprojects/subprojects.
+
+dependencyManagement {
+    imports {
+        // Align Spring Boot versions with the app module.
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.3.5"
+    }
+}
+
+dependencies {
+    // ── Typed HTTP client for the CodeAtlas API ───────────────────────────
+    testImplementation project(':service-client')
+
+    // ── Spring Boot app — needed to start the context at RANDOM_PORT ──────
+    testImplementation project(':server')
+
+    // ── Test infrastructure ───────────────────────────────────────────────
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    // Surface the random port as a system property so IntegrationTestBase
+    // can construct the client without Spring wiring.
+    systemProperty 'server.port', '0'
+}

@@ -1,0 +1,16 @@
+/health:
+  get:
+    tags: [health]
+    operationId: getHealth
+    summary: Get application health status
+    responses:
+      "200":
+        description: Application is healthy
+        content:
+          application/json:
+            schema:
+              $ref: '../codeatlas.yaml#/components/schemas/HealthResponse'
+            example:
+              status: UP
+              application: codeatlas
+              timestamp: "2026-05-02T23:00:00Z"
