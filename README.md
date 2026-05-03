@@ -1,6 +1,8 @@
 # CodeAtlas
 
-A self-hosted repository intelligence service. Indexes a codebase into a navigable graph and exposes it over a REST API so AI coding agents (and humans) can answer questions like "what is the blast radius of changing this file?", "where does this capability already exist?", and "what is the minimal context I need to read to implement this task?".
+> Self-hosted repo intelligence API. Indexes codebase into symbol graph for AI agents: blast radius, capability search, call flow tracing, minimal task context.
+
+A REST service that makes a codebase queryable. Point it at a repository, trigger a snapshot, and agents can ask: what breaks if I change this file, does this capability already exist, what is the smallest set of files I need to read for this task, and where does execution flow from this controller. Built contract-first on OpenAPI 3.1.0 with a layered Spring Boot backend.
 
 ---
 
