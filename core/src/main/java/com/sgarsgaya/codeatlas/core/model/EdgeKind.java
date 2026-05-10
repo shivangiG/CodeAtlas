@@ -1,0 +1,24 @@
+package com.sgarsgaya.codeatlas.core.model;
+
+public enum EdgeKind {
+    DECLARES,
+    CONTAINS,
+    IMPORTS,
+    CALLS,
+    EXTENDS,
+    IMPLEMENTS,
+    ANNOTATED_WITH,
+    PROVIDES_BEAN,
+    INJECTS_BEAN,
+    EXPOSES_ENDPOINT,
+    IMPLEMENTS_OPERATION,
+    CALLS_REMOTE_ENDPOINT,
+    PROVIDES_CAPABILITY,
+    USES_CAPABILITY,
+    READS_ENTITY,
+    WRITES_ENTITY,
+    TESTS,
+    DEPENDS_ON,
+    VIOLATES_RULE,
+    AFFECTS
+}
