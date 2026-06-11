@@ -13,6 +13,7 @@ rootProject.name = 'codeatlas'
 //  :integration-tests   Black-box integration tests. Starts :server at RANDOM_PORT
 //                       and exercises every endpoint through :service-client.
 
+include ':core'
 include ':openapi-spec'
 include ':server'
 include ':service-client'

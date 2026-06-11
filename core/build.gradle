@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api 'org.xerial:sqlite-jdbc:3.45.3.0'
+    api 'org.yaml:snakeyaml:2.2'
+    api 'com.google.code.gson:gson:2.11.0'
+
+    // AST extraction and symbol resolution
+    api 'com.github.javaparser:javaparser-symbol-solver-core:3.26.2'
+
+    // OpenAPI spec parsing
+    api 'io.swagger.parser.v3:swagger-parser:2.1.22'
+
+    // Logging
+    api 'org.slf4j:slf4j-api:2.0.13'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.5.6'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
